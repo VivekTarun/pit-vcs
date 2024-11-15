@@ -1,16 +1,19 @@
-#!/urs/bin/evn node
+#!/usr/bin/env node
+
+
+// above line is called as shebang -> hash bang is shebang.
 
 import path from 'path';
 import fs from 'fs/promises';
 import crypto from 'crypto';
 import { diffLines } from 'diff';
 import chalk from 'chalk';
-// import {Command} from 'commander';
+import {Command} from 'commander';
 
-// const program = new Command();
+const program = new Command();
 
 class Pit {
-    constructor(repoPath = '.') {
+    constructor(repoPath = '.') { 
         this.repoPath = path.join(repoPath, '.pit');
         this.objectPath = path.join(this.repoPath, 'objects'); // .pit/objects
         this.headPath = path.join(this.repoPath, 'HEAD'); // .Pit/HEAD
@@ -149,11 +152,39 @@ class Pit {
     }
 }
 
-(async () => {
-    const pit = new Pit();
-    // await pit.add('sample.txt');
-    // await pit.commit('second commit');
-    // await pit.log();
+// (async () => {
+//     const pit = new Pit();
+//     // await pit.add('sample.txt');
+//     // await pit.commit('second commit');
+//     // await pit.log();
 
-    await pit.showCommitDiff('your_commit_hash_here'); // Replace 'your_commit_hash_here' with an actual commit hash
-})();
+//     await pit.showCommitDiff('your_commit_hash_here'); // Replace 'your_commit_hash_here' with an actual commit hash
+// })();
+
+
+program.command('init').action(async () =>{
+    const pit = new Pit();
+});
+
+program.command('add <file>').action(async (file) => {
+    const pit = new Pit();
+    await pit.add(file);
+});
+
+program.command('commit <message>').action(async (message) => {
+    const pit = new Pit();
+    await pit.commit(message);
+});
+
+program.command('log').action(async () => {
+    const pit = new Pit();
+    await pit.log();
+});
+
+program.command('show <commitHash>').action(async (commitHash) => {
+    const pit = new Pit();
+    await pit.showCommitDiff(commitHash);
+});
+
+// console.log(process.argv);
+program.parse(process.argv);
